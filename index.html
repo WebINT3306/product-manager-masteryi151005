@@ -6,6 +6,94 @@
   <title>Quản lý Sản phẩm</title>
 </head>
 <body>
+  <table id="product-table">
+    <thead>
+      <tr>
+        <th scope="col">STT</th>
+        <th scope="col">ten san pham</th>
+        <th scope="col">danh muc</th>
+        <th scope="col">don gia</th>
+        <th scope="col">so luong</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
+  <form>
+    <input id="input-name" type="text" placeholder="ten san pham" />
+    <input id="input-category" type="text" placeholder="danh muc" />
+    <input id="input-price" type="number" placeholder="don gia" />
+    <input id="input-quantity" type="number" placeholder="so luong" />
+    <button id="btn-add" type="button">Them san pham</button>
+  </form>
+
+  <script>
+    const tableBody = document.querySelector("#product-table tbody");
+
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        const products = JSON.parse(xhr.responseText);
+        products.forEach((p) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>${p.category}</td>
+        <td>${p.price}</td>
+        <td>${p.quantity}</td>
+        `;
+
+        tableBody.appendChild(row);
+        });
+      }
+    };
+    xhr.open('GET', 'products.json');
+    xhr.send();
+
+
+    document.querySelector("#btn-add").addEventListener("click", function () {
+
+    const name = document.querySelector("#input-name").value;
+    const category = document.querySelector("#input-category").value;
+    const price = document.querySelector("#input-price").value;
+    const quantity = document.querySelector("#input-quantity").value;
+    
+      if (name.trim().length < 3) {
+        return;
+      }
+
+      if (price <= 0 || isNaN(price)) {
+        return;
+      }
+
+      if (!Number.isInteger(Number(quantity)) || quantity < 1) {
+        return;
+      }
+
+    const id = tableBody.rows.length + 1;
+    const row = document.createElement("tr");
+
+    row.innerHTML = `
+    <td>${id}</td>
+    <td>${name}</td>
+    <td>${category}</td>
+    <td>${price}</td>
+    <td>${quantity}</td>
+    `;
+
+    tableBody.appendChild(row);
+
+    // reset input
+    document.querySelector("#input-name").value = "";
+    document.querySelector("#input-category").value = "";
+    document.querySelector("#input-price").value = "";
+    document.querySelector("#input-quantity").value = "";
+
+  });
+
+
+  </script>
 </body>
 </html>
