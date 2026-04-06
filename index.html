@@ -58,7 +58,7 @@
     const name = document.querySelector("#input-name").value;
     const category = document.querySelector("#input-category").value;
     const price = document.querySelector("#input-price").value;
-    const quantity = document.querySelector("#input-quantity").value;
+    const quantity = parseInt(document.querySelector("#input-quantity").value);
     
       if (name.trim().length < 3) {
         return;
