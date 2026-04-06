@@ -9,91 +9,89 @@
   <table id="product-table">
     <thead>
       <tr>
-        <th scope="col">STT</th>
-        <th scope="col">ten san pham</th>
-        <th scope="col">danh muc</th>
-        <th scope="col">don gia</th>
-        <th scope="col">so luong</th>
+        <th>STT</th>
+        <th>Tên sản phẩm</th>
+        <th>Danh mục</th>
+        <th>Đơn giá</th>
+        <th>Số lượng</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
   <form>
-    <input id="input-name" type="text" placeholder="ten san pham" />
-    <input id="input-category" type="text" placeholder="danh muc" />
-    <input id="input-price" type="number" placeholder="don gia" />
-    <input id="input-quantity" type="number" placeholder="so luong" />
-    <button id="btn-add" type="button">Them san pham</button>
+    <input id="input-name" type="text" placeholder="Tên sản phẩm" />
+    <input id="input-category" type="text" placeholder="Danh mục" />
+    <input id="input-price" type="number" placeholder="Đơn giá" />
+    <input id="input-quantity" type="number" placeholder="Số lượng" />
+    <button id="btn-add" type="button">Thêm sản phẩm</button>
   </form>
-
-  <script>
-    const tableBody = document.querySelector("#product-table tbody");
-
-    const xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function() {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        const products = JSON.parse(xhr.responseText);
-        products.forEach((p) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-        <td>${p.id}</td>
-        <td>${p.name}</td>
-        <td>${p.category}</td>
-        <td>${p.price}</td>
-        <td>${p.quantity}</td>
-        `;
-
-        tableBody.appendChild(row);
-        });
-      }
-    };
-    xhr.open('GET', 'products.json');
-    xhr.send();
-
-
-    document.getElementById("#btn-add").addEventListener("click", function () {
-
-    const name = document.getElementById("#input-name").value.trim();
-    const category = document.getElementById("#input-category").value.trim();
-    const price = document.getElementById("#input-price").value;
-    const quantity = parseInt(document.getElementById("#input-quantity").value);
-    
-      if (name.trim().length < 3) {
-        return;
-      }
-
-      if (price <= 0 || isNaN(price)) {
-        return;
-      }
-
-      if (!Number.isInteger(Number(quantity)) || quantity < 1) {
-        return;
-      }
-
-    const id = tableBody.rows.length + 1;
-    const row = document.createElement("tr");
-
-    row.innerHTML = `
-    <td>${id}</td>
-    <td>${name}</td>
-    <td>${category}</td>
-    <td>${price}</td>
-    <td>${quantity}</td>
-    `;
-
-    tableBody.appendChild(row);
-
-    // reset input
-    document.getElementById("#input-name").value = "";
-    document.getElementById("#input-category").value = "";
-    document.getElementById("#input-price").value = "";
-    document.getElementById("#input-quantity").value = "";
-
-  });
-
-
-  </script>
 </body>
+
+<script>
+  // Load Json
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.readyState === 4 && xhr.status === 200) {
+      const products = JSON.parse(xhr.responseText);
+      const tbody = document.querySelector('#product-table tbody');
+      tbody.innerHTML = '';
+
+      products.forEach(function(product, index) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${product.name}</td>
+          <td>${product.category}</td>
+          <td>${product.price.toLocaleString('vi-VN')} ₫</td>
+          <td>${product.quantity}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+  };
+  xhr.open('GET', 'products.json');
+  xhr.send();
+
+  // Add
+  document.getElementById('btn-add').addEventListener('click', function() {
+    const name = document.getElementById('input-name').value.trim();
+    const category = document.getElementById('input-category').value.trim();
+    const price = document.getElementById('input-price').value;
+    const quantity = parseInt(document.getElementById('input-quantity').value);
+
+    if (name.length <= 3) {
+      alert("Tên sản phẩm: không được rỗng, ít nhất 3 ký tự");
+      return;
+    }
+
+    if (price < 0) {
+      alert("Đơn giá: phải là số dương");
+      return;
+    }
+
+    if (isNaN(quantity) || quantity < 1 || !Number.isInteger(quantity)) {
+      alert("Số lượng: phải là số nguyên ≥ 1");
+      return;
+    }
+
+    const tbody = document.querySelector('#product-table tbody');
+    const rowCount = tbody.querySelectorAll('tr').length;
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${rowCount + 1}</td>
+      <td>${name}</td>
+      <td>${category}</td>
+      <td>${price.toLocaleString('vi-VN')} ₫</td>
+      <td>${quantity}</td>
+    `;
+    tbody.appendChild(tr);
+
+    document.getElementById('input-name').value     = '';
+    document.getElementById('input-category').value = '';
+    document.getElementById('input-price').value    = '';
+    document.getElementById('input-quantity').value = '';
+  })
+</script>
 </html>
