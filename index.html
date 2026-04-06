@@ -53,6 +53,17 @@
   xhr.open('GET', 'products.json');
   xhr.send();
 
+    document.getElementById('th-name').addEventListener('click', function() {
+      products.sort(function(a, b) {
+        if (a.name < b.name) return sortAsc ? -1 : 1;
+        if (a.name > b.name) return sortAsc ? 1 : -1;
+        return 0;
+      });
+      this.textContent = 'Tên sản phẩm ' + (sortAsc ? '▲' : '▼');
+      sortAsc = !sortAsc;
+      renderTable(products);
+    });
+
   // Add
   document.getElementById('btn-add').addEventListener('click', function() {
     const name = document.getElementById('input-name').value.trim();
