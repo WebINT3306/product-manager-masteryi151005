@@ -55,8 +55,8 @@
 
     document.querySelector("#btn-add").addEventListener("click", function () {
 
-    const name = document.querySelector("#input-name").value;
-    const category = document.querySelector("#input-category").value;
+    const name = document.querySelector("#input-name").value.trim();
+    const category = document.querySelector("#input-category").value.trim();
     const price = document.querySelector("#input-price").value;
     const quantity = parseInt(document.querySelector("#input-quantity").value);
     
